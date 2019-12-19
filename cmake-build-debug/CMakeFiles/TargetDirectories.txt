@@ -1,0 +1,5 @@
+/home/baojian/git/sparse-learn/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/baojian/git/sparse-learn/cmake-build-debug/CMakeFiles/test_fast_pcst.dir
+/home/baojian/git/sparse-learn/cmake-build-debug/CMakeFiles/test_head_tail_proj.dir
+/home/baojian/git/sparse-learn/cmake-build-debug/CMakeFiles/test_sort.dir
+/home/baojian/git/sparse-learn/cmake-build-debug/CMakeFiles/edit_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/cc -Wall -Wextra -std=c11 -O3 -fPIC -g  -rdynamic CMakeFiles/test_sort.dir/sparse_learn/c/sort_test.c.o CMakeFiles/test_sort.dir/sparse_learn/c/sort.c.o  -o test_sort -Wall -O3 -lm 

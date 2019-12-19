@@ -23,8 +23,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="sparse-learn",
-    version="0.0.1",
+    name="sparse_learn",
+    version="0.0.9",
     author="Baojian Zhou",
     author_email="bzhou6@albany.edu",
     description="A package related with sparse learning methods.",
@@ -38,13 +38,13 @@ setup(
     headers=['sparse_learn/c/head_tail_proj.h',
              'sparse_learn/c/fast_pcst.h',
              'sparse_learn/c/sort.h'],
-    ext_modules=[Extension('sparse-learn',
+    ext_modules=[Extension('sparse_learn',
                            sources=src_files,
                            language="C",
                            extra_compile_args=compile_args,
                            include_dirs=[numpy.get_include()])],
     classifiers=[
-        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent", ],
     keywords='sparse learning, structure sparsity, head/tail projection',
