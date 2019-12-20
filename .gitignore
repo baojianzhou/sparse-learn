@@ -104,3 +104,6 @@ venv.bak/
 .mypy_cache/
 .idea
 sparse_learn/c/test*
+dist
+cmake-build-debug
+sparse_learn.egg-info

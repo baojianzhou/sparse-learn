@@ -17,7 +17,7 @@ src_files = ['sparse_learn/c/main_wrapper.c',
              'sparse_learn/c/head_tail_proj.c',
              'sparse_learn/c/fast_pcst.c',
              'sparse_learn/c/sort.c']
-compile_args = ['-shared', '-Wall', '-g', '-O3', '-fPIC', '-std=c11', '-lpython2.7', '-lm']
+compile_args = ['-shared', '-Wall', '-g', '-O3', '-fPIC', '-std=c11', '-lm']
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -33,7 +33,7 @@ setup(
     use_2to3=True,
     url="https://github.com/baojianzhou/sparse-learn",
     packages=find_packages(),
-    install_requires=['numpy', 'matplotlib', 'networkx', 'scipy'],
+    install_requires=['numpy'],
     include_dirs=[numpy.get_include()],
     headers=['sparse_learn/c/head_tail_proj.h',
              'sparse_learn/c/fast_pcst.h',
