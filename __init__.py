@@ -1,1 +1,1 @@
-name = "sparse-learn"
+name = "sparse_learn"

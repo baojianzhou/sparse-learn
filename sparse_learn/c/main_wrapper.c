@@ -279,7 +279,7 @@ static PyMethodDef sparse_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
-        "c_sparse_learn",     /* m_name */
+        "sparse_learn",     /* m_name */
         "This is a module",  /* m_doc */
         -1,                  /* m_size */
         sparse_methods,      /* m_methods */
@@ -293,14 +293,14 @@ static struct PyModuleDef moduledef = {
 /** Python version 2 for module initialization */
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
-PyInit_c_sparse_learn(void){
+PyInit_sparse_learn(void){
      Py_Initialize();
      import_array(); // In order to use numpy, you must include this!
     return PyModule_Create(&moduledef);
 }
 #else
-initc_sparse_learn(void) {
-    Py_InitModule3("c_sparse_learn", sparse_methods, "some docs for solam algorithm.");
+init_sparse_learn(void) {
+    Py_InitModule3("sparse_learn", sparse_methods, "some docs for solam algorithm.");
     import_array(); // In order to use numpy, you must include this!
 }
 

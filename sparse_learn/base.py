@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import random
 import numpy as np
 
 __all__ = ['expit', 'logistic_predict', 'node_pre_rec_fm',
