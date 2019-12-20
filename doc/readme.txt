@@ -1,3 +1,7 @@
+
+Upload module:
+python setup.py sdist bdist_wheel
+
 # sparse-learn
 The sparse learning related methods.
 #------------------------------------------------
