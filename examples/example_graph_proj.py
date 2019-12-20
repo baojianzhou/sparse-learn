@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from sparse_learn.tools.proj_algo import head_proj
-from sparse_learn.tools.proj_algo import tail_proj
-from sparse_learn.tools.fast_pcst import fast_pcst
-from sparse_learn.tools.graph_utils import simu_graph
+from sparse_learn.proj_algo import head_proj
+from sparse_learn.proj_algo import tail_proj
+from sparse_learn.fast_pcst import fast_pcst
+from sparse_learn.graph_utils import simu_graph
 
 
 def test_proj_head():
