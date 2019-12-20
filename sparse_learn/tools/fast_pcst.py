@@ -3,7 +3,7 @@ __all__ = ['fast_pcst']
 import numpy as np
 
 try:
-    from proj_module import proj_pcst
+    from c_sparse_learn import c_proj_pcst
 except ImportError:
     print('cannot find this function: proj_pcst')
     exit(0)
@@ -27,4 +27,4 @@ def fast_pcst(edges, prizes, weights, root, g, pruning, epsilon, verbose):
     if not (weights > 0.).all():
         print('all weights must be positive.')
     # TODO to check variables.
-    return proj_pcst(edges, prizes, weights, root, g, pruning, epsilon, verbose)
+    return c_proj_pcst(edges, prizes, weights, root, g, pruning, epsilon, verbose)

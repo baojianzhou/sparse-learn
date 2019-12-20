@@ -81,12 +81,12 @@ static PyObject *proj_head(PyObject *self, PyObject *args) {
     PyObject *re_edges = PyList_New(head_stat->re_edges->size);
     for (int i = 0; i < head_stat->re_nodes->size; i++) {
         int node_i = head_stat->re_nodes->array[i];
-        PyList_SetItem(re_nodes, i, PyInt_FromLong(node_i));
+        PyList_SetItem(re_nodes, i, PyLong_FromLong(node_i));
         PyList_SetItem(p_x, node_i, PyFloat_FromDouble(x[node_i]));
     }
     for (int i = 0; i < head_stat->re_edges->size; i++) {
         PyList_SetItem(re_edges, i,
-                       PyInt_FromLong(head_stat->re_edges->array[i]));
+                       PyLong_FromLong(head_stat->re_edges->array[i]));
     }
     PyTuple_SetItem(results, 0, re_nodes);
     PyTuple_SetItem(results, 1, re_edges);
@@ -118,7 +118,6 @@ static PyObject *proj_tail(PyObject *self, PyObject *args) {
      * re_edges: projected edges (indices)
      * p_x: projection of x.
      */
-    if (self != NULL) { return NULL; }
     PyArrayObject *edges_, *weights_, *x_;
     int g, s, root, max_iter, verbose;
     double budget, nu, epsilon, err_tol;
@@ -161,12 +160,12 @@ static PyObject *proj_tail(PyObject *self, PyObject *args) {
     PyObject *re_edges = PyList_New(tail_stat->re_edges->size);
     for (int i = 0; i < tail_stat->re_nodes->size; i++) {
         int node_i = tail_stat->re_nodes->array[i];
-        PyList_SetItem(re_nodes, i, PyInt_FromLong(node_i));
+        PyList_SetItem(re_nodes, i, PyLong_FromLong(node_i));
         PyList_SetItem(p_x, node_i, PyFloat_FromDouble(x[node_i]));
     }
     for (int i = 0; i < tail_stat->re_edges->size; i++) {
         PyList_SetItem(re_edges, i,
-                       PyInt_FromLong(tail_stat->re_edges->array[i]));
+                       PyLong_FromLong(tail_stat->re_edges->array[i]));
     }
     PyTuple_SetItem(results, 0, re_nodes);
     PyTuple_SetItem(results, 1, re_edges);
@@ -191,7 +190,6 @@ static PyObject *proj_pcst(PyObject *self, PyObject *args) {
      * re_nodes: result nodes
      * re_edges: result edges
      */
-    if (self != NULL) { return NULL; }
     PyArrayObject *edges_, *prizes_, *weights_;
     int g, root, verbose;
     char *pruning;
@@ -217,10 +215,10 @@ static PyObject *proj_pcst(PyObject *self, PyObject *args) {
     PyObject *re_nodes = PyList_New(stat->re_nodes->size);
     PyObject *re_edges = PyList_New(stat->re_edges->size);
     for (int i = 0; i < stat->re_nodes->size; i++) {
-        PyList_SetItem(re_nodes, i, PyInt_FromLong(stat->re_nodes->array[i]));
+        PyList_SetItem(re_nodes, i, PyLong_FromLong(stat->re_nodes->array[i]));
     }
     for (int i = 0; i < stat->re_edges->size; i++) {
-        PyList_SetItem(re_edges, i, PyInt_FromLong(stat->re_edges->array[i]));
+        PyList_SetItem(re_edges, i, PyLong_FromLong(stat->re_edges->array[i]));
     }
     PyTuple_SetItem(results, 0, re_nodes);
     PyTuple_SetItem(results, 1, re_edges);
@@ -260,7 +258,7 @@ static PyObject *head_tail_bi(PyObject *self, PyObject *args) {
     PyObject *re_nodes = PyList_New(graph_stat->re_nodes->size);
     for (int i = 0; i < graph_stat->re_nodes->size; i++) {
         int cur_node = graph_stat->re_nodes->array[i];
-        PyList_SetItem(re_nodes, i, PyInt_FromLong(cur_node));
+        PyList_SetItem(re_nodes, i, PyLong_FromLong(cur_node));
     }
     PyTuple_SetItem(results, 0, re_nodes);
     free_graph_stat(graph_stat);
@@ -281,7 +279,7 @@ static PyMethodDef sparse_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
-        "sparse_learn",     /* m_name */
+        "c_sparse_learn",     /* m_name */
         "This is a module",  /* m_doc */
         -1,                  /* m_size */
         sparse_methods,      /* m_methods */
@@ -295,14 +293,14 @@ static struct PyModuleDef moduledef = {
 /** Python version 2 for module initialization */
 PyMODINIT_FUNC
 #if PY_MAJOR_VERSION >= 3
-PyInit_sparse_learn(void){
+PyInit_c_sparse_learn(void){
      Py_Initialize();
      import_array(); // In order to use numpy, you must include this!
     return PyModule_Create(&moduledef);
 }
 #else
-initsparse_learn(void) {
-    Py_InitModule3("sparse_learn", sparse_methods, "some docs for solam algorithm.");
+initc_sparse_learn(void) {
+    Py_InitModule3("c_sparse_learn", sparse_methods, "some docs for solam algorithm.");
     import_array(); // In order to use numpy, you must include this!
 }
 

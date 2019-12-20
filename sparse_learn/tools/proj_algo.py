@@ -3,16 +3,16 @@ __all__ = ["HeadTailWrapper", "head_proj", "tail_proj"]
 import numpy as np
 
 try:
-    import proj_module
+    import c_sparse_learn
 
     try:
-        from proj_module import proj_head
-        from proj_module import proj_tail
+        from c_sparse_learn import c_proj_head
+        from c_sparse_learn import c_proj_tail
     except ImportError:
-        print('cannot find these two functions: proj_head, proj_tail')
+        print('cannot find these two functions: c_proj_head, c_proj_tail')
         exit(0)
 except ImportError:
-    print('cannot find the package proj_head')
+    print('cannot find the package sparse_learn')
 
 
 class HeadTailWrapper(object):
@@ -97,7 +97,7 @@ def head_proj(edges, weights, x, g, s, budget=None, delta=None, max_iter=None,
         p_x = np.zeros_like(x)  # projected vector
         return np.asarray([], dtype=int), np.asarray([], dtype=int), p_x
     # [re_nodes, re_edges, p_x]
-    return proj_head(edges, weights, x, g, s, budget, delta, max_iter, err_tol,
+    return c_proj_head(edges, weights, x, g, s, budget, delta, max_iter, err_tol,
                      root, pruning, epsilon, verbose)
 
 
@@ -142,5 +142,5 @@ def tail_proj(edges, weights, x, g, s, budget=None, nu=None,
         p_x = np.zeros_like(x)  # projected vector
         return np.asarray([], dtype=int), np.asarray([], dtype=int), p_x
     # [re_nodes, re_edges, proj_x]
-    return proj_tail(edges, weights, x, g, s, budget, nu, max_iter, err_tol,
+    return c_proj_tail(edges, weights, x, g, s, budget, nu, max_iter, err_tol,
                      root, pruning, epsilon, verbose)

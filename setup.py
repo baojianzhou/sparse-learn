@@ -23,7 +23,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="sparse_learn",
+    name="c_sparse_learn",
     version="0.1.0",
     author="Baojian Zhou",
     author_email="bzhou6@albany.edu",
@@ -38,7 +38,7 @@ setup(
     headers=['sparse_learn/c/head_tail_proj.h',
              'sparse_learn/c/fast_pcst.h',
              'sparse_learn/c/sort.h'],
-    ext_modules=[Extension('sparse_learn',
+    ext_modules=[Extension('c_sparse_learn',
                            sources=src_files,
                            language="C",
                            extra_compile_args=compile_args,
