@@ -5,6 +5,8 @@ from sparse_learn.proj_algo import head_proj
 from sparse_learn.proj_algo import tail_proj
 from sparse_learn.fast_pcst import fast_pcst
 from sparse_learn.graph_utils import simu_graph
+from sparse_learn.graph_utils import random_walk
+from sparse_learn.graph_utils import simu_grid_graph
 from sparse_learn.graph_utils import minimal_spanning_tree
 from sparse_learn.proj_algo import HeadTailWrapper
 
@@ -101,7 +103,8 @@ def test_mst():
             if (j, length - i) in selected_edges or (length - i, j) in selected_edges:
                 edge_posi[index] = (j, length - i)
             index += 1
-    nx.draw_networkx_nodes(G, pos, node_size=100, nodelist=range(length * width), node_color='gray')
+    nx.draw_networkx_nodes(G, pos, node_size=100, nodelist=range(length * width),
+                           node_color='gray')
     nx.draw_networkx_edges(G, pos, alpha=0.5, width=2, edge_color='r')
     plt.axis('off')
     plt.show()
@@ -131,21 +134,19 @@ def test_mst_performance():
     print(len(set(re_nodes1).intersection(re_nodes2)))
 
 
-def test_graph_ghtp():
-    x_tr = np.asarray([[1., 2., 3., 4.], [1., 2., 3., 4.], [1., 2., 3., 4.]], dtype=np.float64)
-    y_tr = np.asarray([1., 1., -1.], dtype=np.float64)
-    w0 = np.asarray([0., 0., 0., 0., 0.])
-    lr = 0.1
-    sparsity = 2
-    tol = 1e-6
-    max_iter = 50
-    eta = 1e-3
-    ghtp_logistic_py(x_tr=x_tr, y_tr=y_tr, w0=w0, lr=lr, sparsity=sparsity, tol=tol, max_iter=max_iter, eta=eta)
+def test_random_walk():
+    edges, costs = simu_grid_graph(4, 4)
+    nodes, edge_list = random_walk(edges=edges, s=5, init_node=8)
+    print(nodes)
+    print(edge_list)
 
 
 def main():
-    test_graph_ghtp()
+    edges, costs = simu_grid_graph(5, 3)
+    print(edges)
+    print(costs)
+    test_random_walk()
 
 
 if __name__ == '__main__':
-    test_proj_algo()
+    main()

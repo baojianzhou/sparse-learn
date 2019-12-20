@@ -2,27 +2,9 @@
 import random
 import numpy as np
 
-__all__ = ['simu_graph', 'simu_grid_graph', 'random_walk', 'expit',
-           'logistic_predict', 'draw_graph', 'node_pre_rec_fm',
+__all__ = ['expit', 'logistic_predict', 'node_pre_rec_fm',
            'logit_loss_bl', 'node_pre_rec_fm', 'least_square_predict',
            'logit_loss_grad_bl', 'logit_loss_grad', 'sensing_matrix']
-
-
-def minimal_spanning_tree(edges, weights, num_nodes):
-    """
-    Find the minimal spanning tree of a graph.
-    :param edges: ndarray dim=(m,2) -- edges of the graph.
-    :param weights: ndarray dim=(m,)  -- weights of the graph.
-    :param num_nodes: int, number of nodes in the graph.
-    :return: (the edge indices of the spanning tree)
-    """
-    try:
-        from proj_module import mst
-    except ImportError:
-        print('cannot find this functions: proj_pcst')
-        exit(0)
-    select_indices = mst(edges, weights, num_nodes)
-    return select_indices
 
 
 def node_pre_rec_fm(true_feature, pred_feature):
@@ -41,190 +23,6 @@ def node_pre_rec_fm(true_feature, pred_feature):
     if (pre + rec) > 0.:
         fm = (2. * pre * rec) / (pre + rec)
     return pre, rec, fm
-
-
-def draw_graph(sub_graph, edges, length, width):
-    """
-    To draw a grid graph.
-    :param sub_graph:
-    :param edges:
-    :param length:
-    :param width:
-    :return:
-    """
-    import networkx as nx
-    from pylab import rcParams
-    import matplotlib.pyplot as plt
-    from matplotlib.pyplot import subplots_adjust
-    subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
-    rcParams['figure.figsize'] = 14, 14
-
-    G = nx.Graph()
-    for edge in edges:
-        G.add_edge(edge[0], edge[1])
-    pos = dict()
-    index = 0
-    for i in range(length):
-        for j in range(width):
-            G.add_node(index)
-            pos[index] = (j, length - i)
-            index += 1
-    nx.draw_networkx_nodes(G, pos, node_size=100,
-                           nodelist=range(33 * 33), node_color='gray')
-    nx.draw_networkx_nodes(G, pos, node_size=100,
-                           nodelist=sub_graph, node_color='b')
-    nx.draw_networkx_edges(G, pos, alpha=0.5, width=2)
-    plt.axis('off')
-    plt.show()
-
-
-def simu_graph(num_nodes, rand=False, graph_type='grid'):
-    """
-    To generate a grid graph. Each node has 4-neighbors.
-    :param num_nodes: number of nodes in the graph.
-    :param rand: if rand True, then generate random weights in (0., 1.)
-    :param graph_type: ['grid', 'chain']
-    :return: edges and corresponding to unite weights.
-    """
-    edges, weights = [], []
-    if graph_type == 'grid':
-        length = int(np.sqrt(num_nodes))
-        width, index = length, 0
-        for i in range(length):
-            for j in range(width):
-                if (index % length) != (length - 1):
-                    edges.append((index, index + 1))
-                    if index + length < int(width * length):
-                        edges.append((index, index + length))
-                else:
-                    if index + length < int(width * length):
-                        edges.append((index, index + length))
-                index += 1
-        edges = np.asarray(edges, dtype=int)
-    elif graph_type == 'chain':
-        for i in range(num_nodes - 1):
-            edges.append((i, i + 1))
-    else:
-        edges = []
-
-    # generate weights of the graph
-    if rand:
-        weights = []
-        while len(weights) < len(edges):
-            rand_x = np.random.random()
-            if rand_x > 0.:
-                weights.append(rand_x)
-        weights = np.asarray(weights, dtype=np.float64)
-    else:
-        weights = np.ones(len(edges), dtype=np.float64)
-    return edges, weights
-
-
-def simu_grid_graph(width, height, rand_weight=False):
-    """Generate a grid graph.
-    To generate a grid graph. Each node has 4-neighbors. Please see more
-    details in https://en.wikipedia.org/wiki/Lattice_graph. For example,
-    we can generate 5x3(width x height) grid graph
-                0---1---2---3---4
-                |   |   |   |   |
-                5---6---7---8---9
-                |   |   |   |   |
-                10--11--12--13--14
-    by using simu_grid_graph(5, 3)
-    We can also generate a 1x5 chain graph
-                0---1---2---3---4
-    by using simu_grid_graph(5, 1)
-    :param width: width of this grid graph.
-    :param height: height of this grid graph.
-    :param rand_weight: generate weights from U(1., 2.) if it is True.
-    :return: edges and corresponding edge costs.
-    return two empty [],[] list if there was any error occurring.
-    """
-    np.random.seed()
-    if width < 0 and height < 0:
-        print('Error: width and height should be positive.')
-        return [], []
-    width, height = int(width), int(height)
-    edges, weights = [], []
-    index = 0
-    for i in range(height):
-        for j in range(width):
-            if (index % width) != (width - 1):
-                edges.append((index, index + 1))
-                if index + width < int(width * height):
-                    edges.append((index, index + width))
-            else:
-                if index + width < int(width * height):
-                    edges.append((index, index + width))
-            index += 1
-    edges = np.asarray(edges, dtype=int)
-    # random generate costs of the graph
-    if rand_weight:
-        weights = []
-        while len(weights) < len(edges):
-            weights.append(random.uniform(1., 2.0))
-        weights = np.asarray(weights, dtype=np.float64)
-    else:  # set unit weights for edge costs.
-        weights = np.ones(len(edges), dtype=np.float64)
-    return edges, weights
-
-
-def random_walk(edges, s, init_node=None, restart=0.0):
-    """Random generate a connected subgraph by using random walk.
-    Given a connected undirected graph (represented as @param:edges), a random
-    walk is a procedure to generate a connected subgraph with s different
-    nodes. Please check more details in the first paragraph of section 1.
-    basic notations and facts of reference [1] in Page 3.
-    Reference:  [1] Lovász, László. "Random walks on graphs: A survey."
-                    Combinatorics, Paul erdos is eighty 2.1 (1993): 1-46.
-    :param edges: input graph as the list of edges.
-    :param s: the number of nodes in the returned subgraph.
-    :param init_node: initial point of the random walk.
-    :param restart: with a fix probability to restart from the initial node.
-    :return: a list of s nodes and a list of walked edges.
-    return two empty list if there was any error occurring.
-    """
-    np.random.seed()
-    adj, nodes = dict(), set()
-    for edge in edges:  # construct the adjacency matrix.
-        uu, vv = int(edge[0]), int(edge[1])
-        nodes.add(uu)
-        nodes.add(vv)
-        if uu not in adj:
-            adj[uu] = set()
-        adj[uu].add(vv)
-        if vv not in adj:
-            adj[vv] = set()
-        adj[vv].add(uu)
-    if init_node is None:
-        # random select an initial node.
-        rand_start_point = random.choice(list(nodes))
-        init_node = list(adj.keys())[rand_start_point]
-    if init_node not in nodes:
-        print('Error: the initial_node is not in the graph!')
-        return [], []
-    if not (0.0 <= restart < 1.0):
-        print('Error: the restart probability not in (0.0,1.0)')
-        return [], []
-    if not (0 <= s <= len(nodes)):
-        print('Error: the number of nodes not in [0,%d]' % len(nodes))
-        return [], []
-    subgraph_nodes, subgraph_edges = set(), set()
-    next_node = init_node
-    subgraph_nodes.add(init_node)
-    if s <= 1:
-        return subgraph_nodes, subgraph_edges
-    # get a connected subgraph with s nodes.
-    while len(subgraph_nodes) < s:
-        next_neighbors = list(adj[next_node])
-        rand_nei = random.choice(next_neighbors)
-        subgraph_nodes.add(rand_nei)
-        subgraph_edges.add((next_node, rand_nei))
-        subgraph_edges.add((rand_nei, next_node))
-        next_node = rand_nei  # go to next node.
-        if random.random() < restart:
-            next_node = init_node
-    return list(subgraph_nodes), list(subgraph_edges)
 
 
 def sensing_matrix(n, x, norm_noise=0.0):
@@ -398,22 +196,6 @@ def logit_loss_grad_bl(x_tr, y_tr, wt, l2_reg, cp, cn):
     return loss, grad
 
 
-def node_pre_rec_fm(true_nodes, pred_nodes):
-    """ Return the precision, recall and f-measure.
-    :param true_nodes:
-    :param pred_nodes:
-    :return: precision, recall and f-measure """
-    true_nodes, pred_nodes = set(true_nodes), set(pred_nodes)
-    pre, rec, fm = 0.0, 0.0, 0.0
-    if len(pred_nodes) != 0:
-        pre = len(true_nodes & pred_nodes) / float(len(pred_nodes))
-    if len(true_nodes) != 0:
-        rec = len(true_nodes & pred_nodes) / float(len(true_nodes))
-    if (pre + rec) > 0.:
-        fm = (2. * pre * rec) / (pre + rec)
-    return [pre, rec, fm]
-
-
 def auc_node_fm(auc, node_fm):
     if 0.0 <= auc <= 1.0 and 0.0 <= node_fm <= 1.0:
         return 2.0 * (auc * node_fm) / (auc + node_fm)
@@ -458,17 +240,17 @@ def m_print(result, method, trial_i, n_tr_, fig_i, mu, sub_graph,
 
 def gen_test_case(x_tr, y_tr, w0, edges, weights):
     f = open('test_case.txt', 'wb')
-    f.write('P %d %d %d\n' % (len(x_tr), len(x_tr[0]), len(edges)))
+    f.write(b'P %d %d %d\n' % (len(x_tr), len(x_tr[0]), len(edges)))
     for i in range(len(x_tr)):
-        f.write('x_tr ')
+        f.write(b'x_tr ')
         for j in range(len(x_tr[i])):
-            f.write('%.8f' % x_tr[i][j] + ' ')
+            f.write(b'%.8f' % x_tr[i][j] + b' ')
         f.write(str(y_tr[i]) + '\n')
     for i in range(len(edges)):
-        f.write('E ' + str(edges[i][0]) + ' ' +
-                str(edges[i][1]) + ' ' + '%.8f' % weights[i] + '\n')
+        f.write(b'E ' + str(edges[i][0]) + b' ' +
+                str(edges[i][1]) + b' ' + '%.8f' % weights[i] + b'\n')
     for i in range(len(w0)):
-        f.write('N %d %.8f\n' % (i, w0[i]))
+        f.write(b'N %d %.8f\n' % (i, w0[i]))
     f.close()
 
 
@@ -488,21 +270,3 @@ def test_logistic():
     print(logistic_predict(x, w)[1])
 
 
-def test_random_walk():
-    edges, costs = simu_grid_graph(4, 4)
-    nodes, edge_list = random_walk(edges=edges, s=5, init_node=8)
-    print(nodes)
-    print(edge_list)
-
-
-def main():
-    edges, costs = simu_grid_graph(5, 3)
-    print(edges)
-    print(costs)
-    test_random_walk()
-    test_logistic()
-    test_expit()
-
-
-if __name__ == '__main__':
-    main()
